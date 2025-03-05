@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Таблица цен</title>
+    <link rel="stylesheet" href="static/progarantii_app/css/styles.css">
+</head>
+<body>
+    <!-- Кнопка выхода -->
+    <form method="post" action="{% url 'account_logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button type="submit">Выйти</button>
+    </form>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="possible_range_prices_id"><strong>Выберите:</strong></label>
+        <select name="possible_range_prices_id" id="possible_range_prices_id">
+            {% for obj in possible_range_prices_list %}
+                <option value="{{ obj.id }}" {% if obj.id == selected_possible_range_prices.id %}selected{% endif %}>
+                    {{ obj }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit">Показать таблицу</button>
+    </form>
+
+    {% if table_data %}
+    {% load table_filters %}
+    <h2>Редактируемая таблица цен</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="possible_range_prices_id" value="{{ selected_possible_range_prices.id }}">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for date_range in date_ranges %}
+                        <th>{{ date_range }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for price_range in price_ranges %}
+                    <tr>
+                        <td class="first-column">{{ price_range }}</td>
+                        {% for date_range in date_ranges %}
+                            <td>
+                                <input type="text" name="year_percent_{{ date_range.id }}_{{ price_range.id }}"
+                                       value="{{ table_data|get_item:date_range.id|price_range:price_range.id }}">
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <button type="submit">Сохранить изменения</button>
+    </form>
+    {% endif %}
+</body>
+</html>

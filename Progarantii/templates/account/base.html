@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+    <head>
+        <title>{% block head_title %}{% endblock head_title %}</title>
+        <link rel="stylesheet" href="{% static 'account/css/auth_styles.css' %}">
+    </head>
+    <body>
+        {% block body %}
+        {% block content %}
+        {% endblock content %}
+        {% endblock body %}
+        {% block extra_body %}
+        {% endblock extra_body %}
+    </body>
+</html>
