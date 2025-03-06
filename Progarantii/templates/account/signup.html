@@ -1,15 +1,15 @@
-{% extends "account/base.html" %}
+<!--{% extends "account/base.html" %}-->
 
-{% block content %}
-<div class="auth-container">
-    <h2>Регистрация</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Зарегистрироваться</button>
-    </form>
-    <div class="link">
-        <a href="{% url 'account_login' %}">Уже есть аккаунт? Войти</a>
-    </div>
-</div>
-{% endblock content %}
+<!--{% block content %}-->
+<!--<div class="auth-container">-->
+<!--    <h2>Регистрация</h2>-->
+<!--    <form method="post">-->
+<!--        {% csrf_token %}-->
+<!--        {{ form.as_p }}-->
+<!--        <button type="submit">Зарегистрироваться</button>-->
+<!--    </form>-->
+<!--    <div class="link">-->
+<!--        <a href="{% url 'account_login' %}">Уже есть аккаунт? Войти</a>-->
+<!--    </div>-->
+<!--</div>-->
+<!--{% endblock content %}-->

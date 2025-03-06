@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главное меню</title>
+    <link rel="stylesheet" href="/static/progarantii_app/css/menu.css">
+</head>
+<body>
+    <!-- Кнопка выхода -->
+    <form method="post" action="{% url 'account_logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button type="submit">Выйти</button>
+    </form>
+
+    <div>
+        <h1>Главное меню</h1>
+        <!-- Кнопка "Создать объект" -->
+        <a href="{% url 'possiblerangeprices' %}" class="big-button">Создать объект</a>
+        <!-- Кнопка "Добавить %" -->
+        <a href="{% url 'basebanksprices' %}" class="big-button">Добавить %</a>
+    </div>
+</body>
+</html>

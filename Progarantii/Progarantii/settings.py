@@ -41,16 +41,17 @@ INSTALLED_APPS = [
     'progarantii_app',
 ]
 
+
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = "/"
-SITE_ID = 1
-
+ACCOUNT_ALLOW_REGISTRATION = False
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_LOGIN_METHODS = {'username'}
-ACCOUNT_EMAIL_VERIFICATION = 'none'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

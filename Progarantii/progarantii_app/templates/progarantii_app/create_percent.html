@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Таблица цен</title>
-    <link rel="stylesheet" href="static/progarantii_app/css/styles.css">
+    <link rel="stylesheet" href="/static/progarantii_app/css/create_percent_styles.css">
 </head>
 <body>
     <!-- Кнопка выхода -->
@@ -11,10 +11,15 @@
         {% csrf_token %}
         <button type="submit">Выйти</button>
     </form>
-
+                <!-- Кнопка перенаправления -->
+        <a href="{% url 'menu' %}">
+            <button type="button" class="redirect-button">Перейти в меню</button>
+        </a>
+    <br>
+    <br>
     <form method="post">
         {% csrf_token %}
-        <label for="possible_range_prices_id"><strong>Выберите:</strong></label>
+        <label for="possible_range_prices_id"><strong>Выбрать:</strong></label>
         <select name="possible_range_prices_id" id="possible_range_prices_id">
             {% for obj in possible_range_prices_list %}
                 <option value="{{ obj.id }}" {% if obj.id == selected_possible_range_prices.id %}selected{% endif %}>

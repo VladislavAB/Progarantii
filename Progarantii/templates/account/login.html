@@ -5,11 +5,15 @@
     <h2>Вход</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <p>
+            <label for="id_login">Логин:</label>
+            {{form.login}}
+        </p>
+        <p>
+            <label for="id_password">Пароль:</label>
+            {{form.password}}
+        </p>
         <button type="submit">Войти</button>
     </form>
-    <div class="link">
-        <a href="{% url 'account_signup' %}">Регистрация</a>
-    </div>
 </div>
 {% endblock content %}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать объект</title>
+    <link rel="stylesheet" href="/static/progarantii_app/css/create_object_styles.css">
+</head>
+<body>
+    <!-- Кнопка выхода -->
+    <form method="post" action="{% url 'account_logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button type="submit">Выйти</button>
+    </form>
+
+    <div>
+        <h1>Создать объект</h1>
+
+        <!-- Форма для создания объекта -->
+        <form method="post" class="mb-5">
+            {% csrf_token %}
+            <div>
+                <!-- Выпадающий список для Bank -->
+                <div style="display: inline-block; margin: 10px;">
+                    <label for="bank">Банк</label><br>
+                    <select name="bank" id="bank">
+                        <option value="">Выберите банк</option>
+                        {% for bank in banks %}
+                            <option value="{{ bank.id }}">{{ bank.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Выпадающий список для Law -->
+                <div style="display: inline-block; margin: 10px;">
+                    <label for="law">Закон</label><br>
+                    <select name="law" id="law">
+                        <option value="">Выберите закон</option>
+                        {% for law in laws %}
+                            <option value="{{ law.id }}">{{ law.type_of_law }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Выпадающий список для Guarantee -->
+                <div style="display: inline-block; margin: 10px;">
+                    <label for="guarantee">Тип обеспечения</label><br>
+                    <select name="guarantee" id="guarantee">
+                        <option value="">Выберите тип обеспечения</option>
+                        {% for guarantee in guarantees %}
+                            <option value="{{ guarantee.id }}">{{ guarantee.type_of_guarantee }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Выпадающий список для DateRangeName -->
+                <div style="display: inline-block; margin: 10px;">
+                    <label for="date_range_name">Диапазон дат</label><br>
+                    <select name="date_range_name" id="date_range_name">
+                        <option value="">Выберите диапазон дат</option>
+                        {% for date_range in date_range_names %}
+                            <option value="{{ date_range.id }}">{{ date_range.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Выпадающий список для PriceRangeName -->
+                <div style="display: inline-block; margin: 10px;">
+                    <label for="price_range_name">Диапазон цен</label><br>
+                    <select name="price_range_name" id="price_range_name">
+                        <option value="">Выберите диапазон цен</option>
+                        {% for price_range in price_range_names %}
+                            <option value="{{ price_range.id }}">{{ price_range.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Checkbox для have_advance -->
+                <div style="display: inline-block; margin: 10px;">
+                    <label for="have_advance">Аванс</label><br>
+                    <input type="checkbox" name="have_advance" id="have_advance" class="form-check-input">
+                </div>
+            </div>
+            <br>
+            <button type="submit">Создать</button>
+        </form>
+        <br>
+
+        <!-- Список существующих объектов -->
+        <h2>Существующие объекты</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Банк</th>
+                    <th>Закон</th>
+                    <th>Тип обеспечения</th>
+                    <th>Диапазон дат</th>
+                    <th>Диапазон цен</th>
+                    <th>Аванс</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in existing_objects %}
+                    <tr>
+                        <td>{{ obj.bank|default:"—" }}</td>
+                        <td>{{ obj.law|default:"—" }}</td>
+                        <td>{{ obj.guarantee|default:"—" }}</td>
+                        <td>{{ obj.date_range_name|default:"—" }}</td>
+                        <td>{{ obj.price_range_name|default:"—" }}</td>
+                        <td>{{ obj.have_advance|yesno:"Да,Нет" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">Объектов пока нет</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+                <!-- Кнопка перенаправления -->
+        <a href="{% url 'menu' %}">
+            <button type="button" class="redirect-button">Перейти в меню</button>
+        </a>
+    </div>
+</body>
+</html>

@@ -60,7 +60,7 @@ class DateRange(models.Model):
                                         verbose_name='Название диапазона')
 
     def __str__(self):
-        return f'{self.start_date} - {self.end_date}'
+        return f'{self.start_date} - {self.end_date} дней'
 
 
 class PriceRangeName(models.Model):
