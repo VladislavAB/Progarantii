@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главное меню</title>
-    <link rel="stylesheet" href="/static/progarantii_app/css/menu.css">
+    <link rel="stylesheet" href="{% static 'progarantii_app/css/menu.css'%}">
 </head>
 <body>
     <!-- Кнопка выхода -->
@@ -16,9 +17,9 @@
     <div>
         <h1>Главное меню</h1>
         <!-- Кнопка "Создать объект" -->
-        <a href="{% url 'possiblerangeprices' %}" class="big-button">Создать объект</a>
+        <a href="{% url 'possiblerangeprices' %}" class="big-button">Задать диапазоны цен банков</a>
         <!-- Кнопка "Добавить %" -->
-        <a href="{% url 'basebanksprices' %}" class="big-button">Добавить %</a>
+        <a href="{% url 'basebanksprices' %}" class="big-button">Управление базовыми ставками</a>
     </div>
 </body>
 </html>

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Таблица цен</title>
-    <link rel="stylesheet" href="/static/progarantii_app/css/create_percent_styles.css">
+    <title>Базовая таблица ставок</title>
+    <link rel="stylesheet" href="{% static 'progarantii_app/css/create_percent_styles.css'%}">
 </head>
 <body>
     <!-- Кнопка выхода -->
@@ -11,10 +12,12 @@
         {% csrf_token %}
         <button type="submit">Выйти</button>
     </form>
-                <!-- Кнопка перенаправления -->
-        <a href="{% url 'menu' %}">
-            <button type="button" class="redirect-button">Перейти в меню</button>
-        </a>
+    <br>
+    <!-- Кнопка перенаправления -->
+    <a href="{% url 'menu' %}">
+        <button type="button" class="redirect-button">Перейти в меню</button>
+    </a>
+    <br>
     <br>
     <br>
     <form method="post">
@@ -30,12 +33,16 @@
         <button type="submit">Показать таблицу</button>
     </form>
 
-    {% if table_data %}
+    <!-- Одна форма для обеих таблиц -->
+    {% if base_table_data or min_table_data %}
     {% load table_filters %}
-    <h2>Редактируемая таблица цен</h2>
     <form method="post">
         {% csrf_token %}
         <input type="hidden" name="possible_range_prices_id" value="{{ selected_possible_range_prices.id }}">
+
+        <!-- Первая таблица (BaseBanksPrices) -->
+        <br>
+        <h2>Базовая таблица ставок</h2>
         <table>
             <thead>
                 <tr>
@@ -52,16 +59,46 @@
                         {% for date_range in date_ranges %}
                             <td>
                                 <input type="text" name="year_percent_{{ date_range.id }}_{{ price_range.id }}"
-                                       value="{{ table_data|get_item:date_range.id|price_range:price_range.id }}">
+                                       value="{{ base_table_data|get_item:date_range.id|price_range:price_range.id }}">
                             </td>
                         {% endfor %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+<!-- Вторая таблица (MinBanksPrices) -->
+<h2>Минимальная таблица ставок</h2>
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            {% for date_range in date_ranges %}
+                <th>{{ date_range }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for price_range in price_ranges %}
+            <tr>
+                <td class="first-column">{{ price_range }}</td>
+                {% for date_range in date_ranges %}
+                    <td>
+                        <input type="text" name="min_value_{{ date_range.id }}_{{ price_range.id }}"
+                               value="{{ min_table_data|get_item:date_range.id|price_range:price_range.id }}">
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+        <!-- Одна кнопка для сохранения -->
         <br>
         <button type="submit">Сохранить изменения</button>
     </form>
     {% endif %}
+
+
 </body>
 </html>

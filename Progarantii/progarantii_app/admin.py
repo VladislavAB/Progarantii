@@ -114,11 +114,8 @@ class BaseBanksPricesAdmin(admin.ModelAdmin):
     list_display = ["possible_range_prices", "price_range", "date_range", "year_percent"]
     list_editable = ["price_range", "date_range", "year_percent"]
 
-# @admin.register(models.BaseBanksPrices)
-# class BaseBanksPricesAdmin(admin.ModelAdmin):
-#     list_display = ["possible_range_prices", "price_range", "date_range", "year_percent"]
-#     list_editable = ["price_range", "date_range", "year_percent"]
-# @admin.register(models.BaseBanksPrices)
-# class BaseBanksPricesAdmin(admin.ModelAdmin):
-#     list_display = ["bank", "law", "guarantee", "price_range", "date_range", "year_percent"]
-#     list_editable = ["price_range", "date_range", "year_percent"]
+
+@admin.register(models.MinBanksPrices)
+class MinBanksPricesAdmin(admin.ModelAdmin):
+    list_display = ["possible_range_prices", "price_range", "date_range", "min_value"]
+    list_editable = ["price_range", "date_range", "min_value"]

@@ -102,3 +102,12 @@ class BaseBanksPrices(models.Model):
     date_range = models.ForeignKey("DateRange", on_delete=models.CASCADE, null=True, blank=True,
                                    verbose_name="Диапазон дат")
     year_percent = models.PositiveIntegerField(null=True, blank=True, verbose_name="Процент %")
+
+
+class MinBanksPrices(models.Model):
+    possible_range_prices = models.ForeignKey("PossibleRangePrices", null=True, blank=True, on_delete=models.CASCADE)
+    price_range = models.ForeignKey("PriceRange", on_delete=models.CASCADE, null=True, blank=True,
+                                    verbose_name="Диапазон цен")
+    date_range = models.ForeignKey("DateRange", on_delete=models.CASCADE, null=True, blank=True,
+                                   verbose_name="Диапазон дат")
+    min_value = models.PositiveIntegerField(null=True, blank=True, verbose_name="Минимальное значение")

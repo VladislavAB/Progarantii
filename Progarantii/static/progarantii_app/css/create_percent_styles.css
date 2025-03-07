@@ -7,7 +7,6 @@ table { width: 80%; margin: auto; border-collapse: collapse; background-color: w
 th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
 th { background-color: #FFD74F; color: black; }
 input[type="text"] { padding: 8px; font-size: 15px; width: 80px; text-align: center; border: 1px solid #ccc; border-radius: 5px; }
-/* Новый стиль для первой колонки */
 td.first-column {
     background-color: #FFD74F;
     color: black;}
