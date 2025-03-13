@@ -1,13 +1,13 @@
 from django.contrib import admin
 from . import models
-from django import forms  # Добавил новое
+from django import forms
 
 
 @admin.register(models.Bank)
 class BankAdmin(admin.ModelAdmin):
     search_fields = ['full_name', 'short_name']
-    list_display = ['full_name', 'short_name', 'AKRA_rating', 'Expert_RA']
-    list_editable = ['AKRA_rating', 'Expert_RA']
+    list_display = ['full_name', 'short_name', 'license_number', 'url', 'AKRA_rating', 'Expert_RA']
+    list_editable = ['AKRA_rating', 'Expert_RA', 'license_number', 'url']
 
 
 @admin.register(models.Law)
@@ -51,10 +51,9 @@ class PossibleRangePricesAdmin(admin.ModelAdmin):
     list_editable = ['bank', 'law', 'guarantee', "have_advance", 'date_range_name', 'price_range_name']
 
 
-# Добавил новое
-class BaseBanksPricesAdminForm(forms.ModelForm):
+class BaseBankPercentAdminForm(forms.ModelForm):
     class Meta:
-        model = models.BaseBanksPrices
+        model = models.BaseBankPercent
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -108,14 +107,14 @@ class BaseBanksPricesAdminForm(forms.ModelForm):
             self.fields['price_range'].queryset = models.PriceRange.objects.none()
 
 
-@admin.register(models.BaseBanksPrices)
+@admin.register(models.BaseBankPercent)
 class BaseBanksPricesAdmin(admin.ModelAdmin):
-    form = BaseBanksPricesAdminForm
+    form = BaseBankPercentAdminForm
     list_display = ["possible_range_prices", "price_range", "date_range", "year_percent"]
     list_editable = ["price_range", "date_range", "year_percent"]
 
 
-@admin.register(models.MinBanksPrices)
+@admin.register(models.MinBankPrice)
 class MinBanksPricesAdmin(admin.ModelAdmin):
     list_display = ["possible_range_prices", "price_range", "date_range", "min_value"]
     list_editable = ["price_range", "date_range", "min_value"]

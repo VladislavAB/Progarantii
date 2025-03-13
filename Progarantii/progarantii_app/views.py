@@ -3,6 +3,83 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.views.generic import TemplateView
 from . import models
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
+
+
+class BankGuaranteeAPIView(APIView):
+    def get(self, request):
+        advance_choices = {'y': True, 'n': False}
+        guarantee_choices = {'i': 'Исполнение', 'u': 'Участие', 'g': 'Гарантийные обязательства'}
+        law_choices = {44: "№ 44", 223: "№ 223", 615: "№ 615"}
+        year_percent = 0.0
+        min_value = 0.0
+
+        # Просим:
+        # bank=SBER&s=23423423,0&d=234&t=44&a=n&m=i
+        # bank - идентификатор банка +++
+        # s - сумма
+        # d - кол-во дней
+        # t - закон [44,223,615] +++
+        # a - наличие аванса [y,n] +++
+        # m - тип гарантии [i,u,g] +++
+
+        # Получаем:
+        # {id": "derzhava",
+        #     "name": "Держава",
+        #     «Expert_RA»: "BBB-(RU)»,
+        #   «AKRA_rating»: "BBB-(RU)»,
+        #     «base_percent»: 3,
+        #     «min_price»: 34}
+        # http://127.0.0.1:8000/api/?bank=alpha&s=60000&d=60&t=223&a=n&m=u
+
+        # Вытаскиваю из request все параметры, которые были переданы в поисковую строку
+        bank_short = request.query_params.get('bank').lower()
+        law_number = law_choices[int(request.query_params.get('t'))]
+        guarantee = guarantee_choices[request.query_params.get('m')]
+        have_advance = advance_choices[request.query_params.get('a')]
+        number_of_days = int(request.query_params.get('d'))
+        price = int(request.query_params.get('s'))
+        bank_obj = models.Bank.objects.get(short_name=bank_short)
+
+        # Ищу по параметрам объект, он может быть единственным уникальным с 4 одинаковыми параметрами.
+        possible_range_price = models.PossibleRangePrices.objects.filter(bank__short_name=bank_short,
+                                                                         law__type_of_law=law_number,
+                                                                         guarantee__type_of_guarantee=guarantee,
+                                                                         have_advance=have_advance).first()
+        # Ищу все объекты с possible_range_prices
+        all_base_bank_percents = models.BaseBankPercent.objects.filter(possible_range_prices=possible_range_price)
+
+        # Ищу пересечения
+        for base_bank_percent in all_base_bank_percents:
+            base_price_range_start, base_price_range_end = (base_bank_percent.price_range.start_price,
+                                                            base_bank_percent.price_range.end_price)
+            base_date_range_start, base_date_range_end = (base_bank_percent.date_range.start_date,
+                                                          base_bank_percent.date_range.end_date)
+            if number_of_days in range(base_date_range_start, base_date_range_end + 1) and price in range(
+                    base_price_range_start, base_price_range_end + 1):
+                year_percent = base_bank_percent.year_percent
+                break
+
+        # Ищу все объекты с possible_range_prices
+        all_min_bank_prices = models.MinBankPrice.objects.filter(possible_range_prices=possible_range_price)
+
+        # Ищу пересечения
+        for min_bank_price in all_min_bank_prices:
+            price_range_start, price_range_end = (min_bank_price.price_range.start_price,
+                                                  min_bank_price.price_range.end_price)
+            date_range_start, date_range_end = (min_bank_price.date_range.start_date,
+                                                min_bank_price.date_range.end_date)
+            if number_of_days in range(date_range_start, date_range_end + 1) and price in range(price_range_start,
+                                                                                                price_range_end + 1):
+                min_value = min_bank_price.min_value
+                break
+
+        # Формирую ответ
+        data = {'id': bank_obj.short_name, 'name': bank_obj.full_name, 'AKRA_rating': bank_obj.AKRA_rating,
+                'Expert_RA': bank_obj.Expert_RA, 'base_percent': year_percent, 'min_price': min_value}
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class MenuView(LoginRequiredMixin, TemplateView):
@@ -92,7 +169,7 @@ class PossibleRangePricesView(LoginRequiredMixin, View):
         return redirect('possiblerangeprices')
 
 
-class BaseBanksPricesView(LoginRequiredMixin, View):
+class BaseBankPercentView(LoginRequiredMixin, View):
     def get(self, request):
         possible_range_prices_list = models.PossibleRangePrices.objects.all()
         return render(request, "progarantii_app/create_percent.html", {
@@ -116,7 +193,7 @@ class BaseBanksPricesView(LoginRequiredMixin, View):
                 if len(parts) == 4:  # ["year", "percent", date_id, price_id]
                     date_id = parts[2]
                     price_id = parts[3]
-                    base_banks_price, _ = models.BaseBanksPrices.objects.get_or_create(
+                    base_banks_price, _ = models.BaseBankPercent.objects.get_or_create(
                         possible_range_prices=possible_range_prices,
                         price_range_id=price_id,
                         date_range_id=date_id,
@@ -130,7 +207,7 @@ class BaseBanksPricesView(LoginRequiredMixin, View):
                 if len(parts) == 4:  # ["min", "value", date_id, price_id]
                     date_id = parts[2]
                     price_id = parts[3]
-                    min_banks_price, _ = models.MinBanksPrices.objects.get_or_create(
+                    min_banks_price, _ = models.MinBankPrice.objects.get_or_create(
                         possible_range_prices=possible_range_prices,
                         price_range_id=price_id,
                         date_range_id=date_id,
@@ -149,7 +226,7 @@ class BaseBanksPricesView(LoginRequiredMixin, View):
         for date_range in date_ranges:
             base_table_data[date_range.id] = {}
             for price_range in price_ranges:
-                base_banks_price, _ = models.BaseBanksPrices.objects.get_or_create(
+                base_banks_price, _ = models.BaseBankPercent.objects.get_or_create(
                     possible_range_prices=possible_range_prices,
                     price_range=price_range,
                     date_range=date_range,
@@ -162,7 +239,7 @@ class BaseBanksPricesView(LoginRequiredMixin, View):
         for date_range in date_ranges:
             min_table_data[date_range.id] = {}
             for price_range in price_ranges:
-                min_banks_price, _ = models.MinBanksPrices.objects.get_or_create(
+                min_banks_price, _ = models.MinBankPrice.objects.get_or_create(
                     possible_range_prices=possible_range_prices,
                     price_range=price_range,
                     date_range=date_range,
