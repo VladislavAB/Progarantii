@@ -32,7 +32,7 @@ class BankGuaranteeAPIView(APIView):
         #   «AKRA_rating»: "BBB-(RU)»,
         #     «base_percent»: 3,
         #     «min_price»: 34}
-        # http://127.0.0.1:8000/api/?bank=alpha&s=60000&d=60&t=223&a=n&m=u
+        # Пример: http://127.0.0.1:8000/api/?bank=alpha&s=60000&d=60&t=223&a=n&m=u
 
         # Вытаскиваю из request все параметры, которые были переданы в поисковую строку
         bank_short = request.query_params.get('bank').lower()
