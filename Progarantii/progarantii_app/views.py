@@ -88,6 +88,7 @@ class MenuView(LoginRequiredMixin, TemplateView):
 
 class PossibleRangePricesView(LoginRequiredMixin, View):
     def get(self, request):
+        # Собираем записи всех моделей
         banks = models.Bank.objects.all()
         laws = models.Law.objects.all()
         guarantees = models.Guarantee.objects.all()
@@ -113,7 +114,6 @@ class PossibleRangePricesView(LoginRequiredMixin, View):
             obj.delete()
             return redirect('possiblerangeprices')
 
-        # Получаем данные из формы
         bank_id = request.POST.get('bank')
         law_id = request.POST.get('law')
         guarantee_id = request.POST.get('guarantee')
@@ -121,7 +121,6 @@ class PossibleRangePricesView(LoginRequiredMixin, View):
         price_range_name_id = request.POST.get('price_range_name')
         have_advance = request.POST.get('have_advance') == 'on'
 
-        # Преобразуем пустые строки в None для корректной проверки
         bank = models.Bank.objects.get(id=bank_id) if bank_id else None
         law = models.Law.objects.get(id=law_id) if law_id else None
         guarantee = models.Guarantee.objects.get(id=guarantee_id) if guarantee_id else None
@@ -188,6 +187,8 @@ class BaseBankPercentView(LoginRequiredMixin, View):
 
         # Сохранение данных для обеих таблиц
         for key, value in request.POST.items():
+            print('key', key)
+            print('value', value)
             if key.startswith("year_percent_"):
                 parts = key.split("_")
                 if len(parts) == 4:  # ["year", "percent", date_id, price_id]
