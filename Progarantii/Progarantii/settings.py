@@ -24,7 +24,11 @@ SECRET_KEY = 'django-insecure-&0m!%%uzrqi96(7(ocb0djh00p(t-05p5(mjg$r$8gn413br_d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'admin.progarantii.ru']
+CSRF_TRUSTED_ORIGINS = ['http://admin.progarantii.ru', 'https://admin.progarantii.ru']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # Application definition
 
@@ -41,7 +45,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'progarantii_app',
 ]
-
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = "/"
